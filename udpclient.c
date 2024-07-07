@@ -14,7 +14,7 @@ int main(void)
     char server_message[MAX_MESSAGE_SIZE], client_message[MAX_MESSAGE_SIZE];
     int recv_size, server_addr_len;
 
-    // Create socket:
+
     socket_desc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     
     if(socket_desc < 0){
@@ -23,12 +23,19 @@ int main(void)
     }
     printf("Socket created successfully\n");
 
-    // Prepare the server address structure:
+  
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(SERVER_PORT);
     server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+   printf("Enter message: ");
+    fgets(client_message, sizeof(client_message), stdin);
+    
 
-    // Get input from the user:
+    size_t len = strlen(client_message);
+    if (len > 0 && client_message[len - 1] == '\n') {
+        client_message[len - 1] = '\0';
+    }
+ 
     printf("Enter message: ");
     fgets(client_message, MAX_MESSAGE_SIZE, stdin);
     client_message[strcspn(client_message, "\n")] = '\0'; // Remove newline character if present
@@ -41,7 +48,7 @@ int main(void)
     }
     printf("Message sent to server\n");
 
-    // Receive the server's response:
+   
     server_addr_len = sizeof(server_addr);
     recv_size = recvfrom(socket_desc, server_message, MAX_MESSAGE_SIZE, 0,
                          (struct sockaddr*)&server_addr, &server_addr_len);
